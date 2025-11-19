@@ -1,0 +1,5 @@
+{
+  "apiEndpoint": "http://localhost:11434",
+  "model": "llama3",
+  "enabled": true
+}
