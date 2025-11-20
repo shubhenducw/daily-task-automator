@@ -8,11 +8,14 @@ function getN8nConfig() {
   if (settings) {
     const parsed = JSON.parse(settings);
     return {
-      webhookUrl: parsed.n8nWebhook || n8nConfig.webhookUrl,
+      webhookUrl: parsed.n8nWebhook || import.meta.env.VITE_N8N_WEBHOOK_URL || n8nConfig.webhookUrl,
       enabled: parsed.n8nEnabled !== false
     };
   }
-  return n8nConfig;
+  return {
+    ...n8nConfig,
+    webhookUrl: import.meta.env.VITE_N8N_WEBHOOK_URL || n8nConfig.webhookUrl
+  };
 }
 
 /**

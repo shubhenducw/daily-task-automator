@@ -8,12 +8,16 @@ function getOllamaConfig() {
   if (settings) {
     const parsed = JSON.parse(settings);
     return {
-      apiEndpoint: parsed.ollamaEndpoint || ollamaConfig.apiEndpoint,
-      model: parsed.ollamaModel || ollamaConfig.model,
+      apiEndpoint: parsed.ollamaEndpoint || import.meta.env.VITE_OLLAMA_API_ENDPOINT || ollamaConfig.apiEndpoint,
+      model: parsed.ollamaModel || import.meta.env.VITE_OLLAMA_MODEL || ollamaConfig.model,
       enabled: parsed.ollamaEnabled !== false
     };
   }
-  return ollamaConfig;
+  return {
+    ...ollamaConfig,
+    apiEndpoint: import.meta.env.VITE_OLLAMA_API_ENDPOINT || ollamaConfig.apiEndpoint,
+    model: import.meta.env.VITE_OLLAMA_MODEL || ollamaConfig.model
+  };
 }
 
 /**

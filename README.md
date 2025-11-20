@@ -1,16 +1,75 @@
-# React + Vite
+# Daily Task Automator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A cross-platform GUI application built with React, Vite, and Tauri to help you manage daily tasks, automate workflows with n8n, and leverage AI suggestions via Ollama.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Task Management**: Collect and organize your daily tasks.
+- **AI Integration**: Get task suggestions and summaries using local LLMs via Ollama.
+- **Automation**: Trigger workflows in n8n based on your tasks.
+- **Cross-Platform**: Runs on macOS, Windows, and Linux.
 
-## React Compiler
+## Local Setup
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Prerequisites
 
-## Expanding the ESLint configuration
+- [Node.js](https://nodejs.org/) (v18 or later)
+- [Docker](https://www.docker.com/) & Docker Compose
+- [Rust](https://www.rust-lang.org/tools/install) (for Tauri development)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### 1. Start Backend Services
+
+We use Docker Compose to run n8n and Ollama locally.
+
+```bash
+docker-compose up -d
+```
+
+This will start:
+- **n8n** at `http://localhost:5678`
+- **Ollama** at `http://localhost:11434`
+
+*Note: For Ollama, you may need to pull a model first if you haven't already:*
+```bash
+docker exec -it ollama ollama pull llama3
+```
+
+### 2. Environment Variables
+
+Create a `.env` file in the root directory. You can copy the example below:
+
+```env
+# Supabase Configuration (if used)
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_ANON_KEY=your_supabase_key
+
+# n8n Integration
+VITE_N8N_WEBHOOK_URL=http://localhost:5678/webhook/your-webhook-id
+
+# Ollama Integration
+VITE_OLLAMA_API_ENDPOINT=http://localhost:11434
+VITE_OLLAMA_MODEL=llama3
+```
+
+### 3. Run the Application
+
+Install dependencies and start the development server:
+
+```bash
+npm install
+npm run tauri dev
+```
+
+## Use Cases
+
+### 1. Intelligent Task Suggestions
+The application connects to a local Ollama instance to analyze your current task list and suggest actionable follow-up items. This keeps your workflow fluid and helps you remember forgotten steps.
+
+### 2. Automated Workflows
+Send your daily task summary to n8n to trigger complex automations, such as:
+- syncing tasks to Jira or ClickUp.
+- sending daily reports to Slack or Microsoft Teams.
+- updating a Google Sheet with your progress.
+
+### 3. Daily Summaries
+Generate a concise summary of your day's work using the "Summarize" feature, powered by Ollama, ready to be shared with your team or manager.
